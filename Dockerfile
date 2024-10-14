@@ -1,6 +1,6 @@
 ARG GOLANG_VERSION
 ARG ALPINE_VERSION
-FROM golang:${GOLANG_VERSION}-alpine${ALPINE_VERSION} as builder
+FROM golang:${GOLANG_VERSION}-alpine${ALPINE_VERSION} AS builder
 
 RUN apk --no-cache --virtual .build-deps add make gcc musl-dev binutils-gold
 
@@ -20,6 +20,7 @@ RUN apk upgrade --no-cache --no-interactive && apk add --no-cache ca-certificate
     echo '{ "version": 3 }' > /etc/krakend/krakend.json
 
 COPY --from=builder /app/krakend /usr/bin/krakend
+COPY --from=builder /app/plugins /etc/krakend/plugins
 
 USER 1000
 
